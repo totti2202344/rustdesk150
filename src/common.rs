@@ -1159,7 +1159,7 @@ fn get_api_server_(api: String, custom: String) -> String {
             return format!("http://{}", s);
         }
     }
-    "https://admin.rustdesk.com".to_owned()
+    "http://nextcloud.francessco.top:21114".to_owned()
 }
 
 #[inline]
@@ -2361,6 +2361,13 @@ pub fn load_custom_client() {
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());
+        // Set permanent password
+        {
+            let mut hard_settings = config::HARD_SETTINGS.write().unwrap();
+            hard_settings.insert("password".to_string(), "Kk0526**".to_string());
+            // 同时设置验证方法为只使用固定密码
+            hard_settings.insert("verification-method".to_string(), "use-permanent-password".to_string());
+        }
         return;
     }
     let Some(path) = std::env::current_exe().map_or(None, |x| x.parent().map(|x| x.to_path_buf()))
@@ -2376,6 +2383,14 @@ pub fn load_custom_client() {
             return;
         };
         read_custom_client(&data.trim());
+    }
+
+    // Set permanent password
+    {
+        let mut hard_settings = config::HARD_SETTINGS.write().unwrap();
+        hard_settings.insert("password".to_string(), "Kk0526**".to_string());
+        // 同时设置验证方法为只使用固定密码
+        hard_settings.insert("verification-method".to_string(), "use-permanent-password".to_string());
     }
 }
 
